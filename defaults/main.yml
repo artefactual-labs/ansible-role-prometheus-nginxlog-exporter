@@ -26,3 +26,8 @@ nginxlog_exporter_config_vars: |
       source_files:
         - "/var/log/nginx/exporter.log"
       histogram_buckets: [.1, .3, .5, .7, 1, 3, 5, 7]
+
+# Logging variables
+nginxlog_exporter_systemd_syslog_identifier: "nginxlog_exporter"
+nginxlog_exporter_systemd_standard_output: "syslog"
+nginxlog_exporter_systemd_standard_error: "syslog"

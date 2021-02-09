@@ -11,7 +11,10 @@ Group={{ nginxlog_exporter_group }}
 ExecStart={{ deploy_helper.new_release_path }}/prometheus-nginxlog-exporter \
     -config-file {{ deploy_helper.shared_path }}/config.yaml
 
-SyslogIdentifier=nginxlog_exporter
+SyslogIdentifier={{ nginxlog_exporter_systemd_syslog_identifier }}
+StandardOutput={{ nginxlog_exporter_systemd_standard_output }}
+StandardError={{ nginxlog_exporter_systemd_standard_error }}
+
 Restart=always
 ProtectSystem=full
 CapabilityBoundingSet=
