@@ -1,6 +1,6 @@
 ---
 
-nginxlog_exporter_version: 1.3.0
+nginxlog_exporter_version: 1.11.0
 nginxlog_exporter_listen_address: 0.0.0.0
 nginxlog_exporter_listen_port: 4040
 
@@ -26,6 +26,8 @@ nginxlog_exporter_config_vars: |
       source_files:
         - "/var/log/nginx/exporter.log"
       histogram_buckets: [.1, .3, .5, .7, 1, 3, 5, 7]
+  log:
+    level: warning
 
 # Logging variables
 nginxlog_exporter_systemd_syslog_identifier: "nginxlog_exporter"

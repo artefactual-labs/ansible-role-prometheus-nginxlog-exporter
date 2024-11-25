@@ -43,7 +43,7 @@
     group: "{{ nginxlog_exporter_group }}"
     mode: 0750
 
-- name: download release
+- name: download release (version<=1.4.0)
   get_url:
     url: "{{ nginxlog_exporter_download_url }}"
     dest: "{{ deploy_helper.new_release_path }}/prometheus-nginxlog-exporter"
@@ -54,7 +54,35 @@
   until: _download_release is succeeded
   retries: 5
   delay: 2
-  when: not nginxlog_exporter_bin.stat.exists or nginxlog_exporter_force_install|bool
+  when:
+    - not nginxlog_exporter_bin.stat.exists or nginxlog_exporter_force_install|bool
+    - nginxlog_exporter_version is version('1.4.0', '<=')
+
+- name: download tar.gz release (version>1.4.0)
+  get_url:
+    url: "{{ nginxlog_exporter_download_url }}_{{ nginxlog_exporter_version }}_linux_amd64.tar.gz"
+    dest: "{{ deploy_helper.new_release_path }}/prometheus-nginxlog-exporter_{{ nginxlog_exporter_version }}_linux_amd64.tar.gz"
+    owner: "{{ nginxlog_exporter_user }}"
+    group: "{{ nginxlog_exporter_group }}"
+    mode: 0644
+  register: _download_release
+  until: _download_release is succeeded
+  retries: 5
+  delay: 2
+  when:
+    - not nginxlog_exporter_bin.stat.exists or nginxlog_exporter_force_install|bool
+    - nginxlog_exporter_version is version('1.4.0', '>')
+
+- name: Extract prometheus-nginxlog-exporter from tar.gz (version>1.4.0)
+  ansible.builtin.unarchive:
+    src: "{{ deploy_helper.new_release_path }}/prometheus-nginxlog-exporter_{{ nginxlog_exporter_version }}_linux_amd64.tar.gz"
+    dest: "{{ deploy_helper.new_release_path }}"
+    remote_src: yes
+    include:
+      - "prometheus-nginxlog-exporter"
+    mode: 0755
+  when:
+    - nginxlog_exporter_version is version('1.4.0', '>')
 
 - name: create config
   template:
